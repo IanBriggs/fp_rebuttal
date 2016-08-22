@@ -7,8 +7,10 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-
+extern uint64_t current_time_ns(void);
+const size_t INPUTS = 10;
 
 double jet(double x1, double x2)
 {
@@ -43,13 +45,13 @@ int main() {
     printf("Could not open final_inputs1\n");
   }
 
-  char *s = malloc(10);
-  for (i = 0; i < INPUTS; i++)
+  char *s = malloc(sizeof(long double));
+  for (size_t i = 0; i < INPUTS; i++)
   {
     if (!feof(infile1))
     {
       fscanf(infile1, "%s", s);
-      finputs1[i] = (int)cov_deserialize(s, 10);
+      finputs1[i] = (double) cov_deserialize(s, sizeof(long double));
     }
   }
 
@@ -61,32 +63,34 @@ int main() {
     printf("Could not open final_inputs2\n");
   }
 
-  char *s = malloc(10);
-  for (i = 0; i < INPUTS; i++)
+  //char *s = malloc(10);
+  for (size_t i = 0; i < INPUTS; i++)
   {
     if (!feof(infile2))
     {
       fscanf(infile2, "%s", s);
-      finputs2[i] = (int)cov_deserialize(s, 10);
+      finputs2[i] = (int)cov_deserialize(s, sizeof(long double));
     }
   }
 
 
 
-  start = current_time_ns();
-  for (l = 0; l < INPUTS; l++)
+  uint64_t start = current_time_ns();
+  for (size_t l = 0; l < INPUTS; l++)
   {
     double x1 = finputs1[l];
     double x2 = finputs2[l];
     log[l] = jet(x1, x2);
   }
-  end = current_time_ns();
+  uint64_t end = current_time_ns();
 
-  diff = (end-start);
+  long int diff = (end-start);
 
 
   // 2. create spec, or checking results
-  cov_arr_spec_log("spec.cov", threshold, INPUTS, log);
+  if (access("spec.cov", F_OK) == -1) {
+    cov_arr_spec_log("spec.cov", threshold, INPUTS, log);
+  }
   cov_arr_log(log, INPUTS, "result", "log.cov");
   cov_check("log.cov", "spec.cov", INPUTS);
 

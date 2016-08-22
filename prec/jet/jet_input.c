@@ -70,8 +70,8 @@ main()
   for (size_t i=0; i<INPUTS; i++) {
     inputs1[i] = rand_real_range(-5.0, 5.0);
     inputs2[i] = rand_real_range(-20.0, 5.0);
-    cov_log("", "final_inputs1", 1, inputs1[i]);
-    cov_log("", "final_inputs2", 1, inputs2[i]);
+    cov_log("", "final_inputs1", 1, (long double) inputs1[i]);
+    cov_log("", "final_inputs2", 1, (long double) inputs2[i]);
   }
 
 
