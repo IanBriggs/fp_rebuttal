@@ -10,11 +10,11 @@ rm -f final_inputs1 final_inputs2 spec.cov *.bc
 $SC/compile.sh cone_sa_input .
 lli cone_sa_input.bc
 
-$SC/compile.sh cone_sa .
 
 run=0
-echo "No configuration_found!" > prec_output.txt
-until [ $(grep -q "No configuration is found!" prec_output.txt) -eq 0 ]; do
+echo "No configuration is found!" > prec_output.txt
+while [ "$(grep -c 'No configuration is found!' prec_output.txt)" -ge 1 ]; do
+    $SC/compile.sh cone_sa .
     $SC/search.sh cone_sa .
     $SC/pconfig.sh cone_sa .
 
