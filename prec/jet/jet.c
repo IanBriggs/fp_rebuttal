@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 extern uint64_t current_time_ns(void);
-const size_t INPUTS = 1000;
+const size_t INPUTS = 100;
 
 double jet(double x1, double x2)
 {
@@ -56,7 +56,7 @@ double jet(double x1, double x2)
 int main() {
   // variables for logging/checking
   long double log[INPUTS];
-  long double threshold = 5e-3; 
+  long double threshold = 1.02e-3; // 7.02e-3
 
   // 0. read input from the file final_inputs
   int finputs1[INPUTS];
@@ -111,7 +111,7 @@ int main() {
 
   // 2. create spec, or checking results
   if (access("spec.cov", F_OK) == -1) {
-    cov_arr_spec_log("spec.cov", threshold, INPUTS, log);
+    cov_arr_spec_log("spec.cov", (long double)threshold, INPUTS, log);
   }
   cov_arr_log(log, INPUTS, "result", "log.cov");
   cov_check("log.cov", "spec.cov", INPUTS);
